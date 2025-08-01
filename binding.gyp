@@ -10,7 +10,7 @@
   'targets': [
     {
       'target_name': 'profiler',
-      'win_delay_load_hook': 'false',
+      'win_delay_load_hook': 'true',
       'sources': [
         'src/cpu_profiler/cpu_profiler.cc',
         'src/cpu_profiler/cpu_profile.cc',
@@ -30,23 +30,41 @@
       ],
       'conditions':[
         ['OS == "linux"', {
-          'cflags': [
+          'cflags_cc': [
+            '-std=gnu++20',
             '-O2',
-            '-std=c++17',
             '-Wno-sign-compare',
             '-Wno-cast-function-type',
           ],
         }],
         ['OS == "mac"', {
+          'cflags_cc': [
+            '-std=c++20',
+            '-O2',
+            '-Wconversion',
+            '-Wno-sign-conversion',
+          ],
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-            'OTHER_CFLAGS': [
-              '-std=c++17',
+            'OTHER_CPLUSPLUSFLAGS': [
+              '-std=c++20',
               '-Wconversion',
               '-Wno-sign-conversion',
             ]
           }
         }],
+        ['OS == "win"', {
+          'msvs_settings': {
+            'VCCLCompilerTool': {
+              'AdditionalOptions': ['/std:c++20'],
+              'ExceptionHandling': 1
+            }
+          },
+          'defines': [
+            'NOMINMAX',
+            'WIN32_LEAN_AND_MEAN'
+          ]
+        }]
       ]
     },
   ],
